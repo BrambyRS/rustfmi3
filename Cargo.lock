@@ -3,5 +3,5 @@
 version = 4
 
 [[package]]
-name = "fmu_dev"
+name = "fmi3"
 version = "0.1.0"
