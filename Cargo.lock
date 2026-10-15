@@ -5,3 +5,11 @@ version = 4
 [[package]]
 name = "fmi3"
 version = "0.1.0"
+
+[[package]]
+name = "smd_fmu"
+version = "0.1.0"
+
+[[package]]
+name = "smd_importer"
+version = "0.1.0"
