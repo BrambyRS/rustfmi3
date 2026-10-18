@@ -4,24 +4,6 @@
 
 use std::ffi::{c_char, c_void};
 
-/// Enumeration of the different data types that can be set or retrieved in the FMI 3.0 interface.
-pub enum FMI3DataType {
-    FMI3Boolean,
-    FMI3Float32,
-    FMI3Float64,
-    FMI3Int8,
-    FMI3Int16,
-    FMI3Int32,
-    FMI3Int64,
-    FMI3UInt8,
-    FMI3UInt16,
-    FMI3UInt32,
-    FMI3UInt64,
-    FMI3Binary,
-    FMI3String,
-    FMI3Clock,
-}
-
 // #region number types
 pub type FMI3Boolean = bool;
 pub type FMI3Float32 = f32;
