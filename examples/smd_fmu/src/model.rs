@@ -9,6 +9,8 @@ pub struct SpringMassDamper {
     pub c: f64,
     /// State vector [position, velocity]
     pub x: [f64; 2],
+    /// Time variable
+    pub time: f64,
 }
 
 impl SpringMassDamper {
@@ -20,6 +22,7 @@ impl SpringMassDamper {
             k,
             c,
             x: [0.0, 0.0],
+            time: 0.0,
         }
     }
 
