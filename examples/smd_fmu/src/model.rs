@@ -9,6 +9,8 @@ pub struct SpringMassDamper {
     pub c: f64,
     /// State vector [position, velocity]
     pub x: [f64; 2],
+    /// State derivatives [velocity, acceleration]
+    pub dx: [f64; 2],
     /// Time variable
     pub time: f64,
 }
@@ -22,15 +24,14 @@ impl SpringMassDamper {
             k,
             c,
             x: [0.0, 0.0],
+            dx: [0.0, 0.0],
             time: 0.0,
         }
     }
 
     /// Returns the state derivatives [velocity, acceleration].
-    pub fn ode(&self) -> [f64; 2] {
-        return [
-            self.x[1],
-            (-self.k * self.x[0] - self.c * self.x[1]) / self.mass,
-        ];
+    pub fn ode(&mut self) {
+        self.dx[0] = self.x[1];
+        self.dx[1] = (-self.k * self.x[0] - self.c * self.x[1]) / self.mass;
     }
 }
