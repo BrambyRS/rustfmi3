@@ -9,6 +9,9 @@ version = "0.1.0"
 [[package]]
 name = "smd_fmu"
 version = "0.1.0"
+dependencies = [
+ "fmi3",
+]
 
 [[package]]
 name = "smd_importer"
