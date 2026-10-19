@@ -128,3 +128,612 @@ pub unsafe extern "C" fn fmi3Reset(instance: FMI3Instance) -> FMI3Status {
     }
 }
 // #endregion enter/exit initialization mode, enter event mode, terminate, and reset
+
+// #region getting and setting variable values
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn GetFloat32(
+    instance: FMI3Instance,
+    value_references: &[FMI3ValueReference],
+    n_value_references: usize,
+    values: &mut [FMI3Float32],
+    n_values: usize,
+) -> FMI3Status {
+    unsafe {
+        let fmu_instance: &mut fmu::FMU = &mut *(instance as *mut fmu::FMU);
+        for i in 0..n_value_references {
+            let vr = value_references[i];
+            let value = &mut values[i];
+            match fmu_instance.get_variable(vr as usize) {
+                Ok(fmu::FMI3DataType::FMI3Float32(v)) => *value = v,
+                _ => return FMI3Status::ERROR,
+            }
+        }
+        FMI3Status::OK
+    }
+}
+
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn GetFloat64(
+    instance: FMI3Instance,
+    value_references: &[FMI3ValueReference],
+    n_value_references: usize,
+    values: &mut [FMI3Float64],
+    n_values: usize,
+) -> FMI3Status {
+    unsafe {
+        let fmu_instance: &mut fmu::FMU = &mut *(instance as *mut fmu::FMU);
+        for i in 0..n_value_references {
+            let vr = value_references[i];
+            let value = &mut values[i];
+            match fmu_instance.get_variable(vr as usize) {
+                Ok(fmu::FMI3DataType::FMI3Float64(v)) => *value = v,
+                _ => return FMI3Status::ERROR,
+            }
+        }
+        FMI3Status::OK
+    }
+}
+
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn GetInt8(
+    instance: FMI3Instance,
+    value_references: &[FMI3ValueReference],
+    n_value_references: usize,
+    values: &mut [FMI3Int8],
+    n_values: usize,
+) -> FMI3Status {
+    unsafe {
+        let fmu_instance: &mut fmu::FMU = &mut *(instance as *mut fmu::FMU);
+        for i in 0..n_value_references {
+            let vr = value_references[i];
+            let value = &mut values[i];
+            match fmu_instance.get_variable(vr as usize) {
+                Ok(fmu::FMI3DataType::FMI3Int8(v)) => *value = v,
+                _ => return FMI3Status::ERROR,
+            }
+        }
+        FMI3Status::OK
+    }
+}
+
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn GetUInt8(
+    instance: FMI3Instance,
+    value_references: &[FMI3ValueReference],
+    n_value_references: usize,
+    values: &mut [FMI3UInt8],
+    n_values: usize,
+) -> FMI3Status {
+    unsafe {
+        let fmu_instance: &mut fmu::FMU = &mut *(instance as *mut fmu::FMU);
+        for i in 0..n_value_references {
+            let vr = value_references[i];
+            let value = &mut values[i];
+            match fmu_instance.get_variable(vr as usize) {
+                Ok(fmu::FMI3DataType::FMI3UInt8(v)) => *value = v,
+                _ => return FMI3Status::ERROR,
+            }
+        }
+        FMI3Status::OK
+    }
+}
+
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn GetInt16(
+    instance: FMI3Instance,
+    value_references: &[FMI3ValueReference],
+    n_value_references: usize,
+    values: &mut [FMI3Int16],
+    n_values: usize,
+) -> FMI3Status {
+    unsafe {
+        let fmu_instance: &mut fmu::FMU = &mut *(instance as *mut fmu::FMU);
+        for i in 0..n_value_references {
+            let vr = value_references[i];
+            let value = &mut values[i];
+            match fmu_instance.get_variable(vr as usize) {
+                Ok(fmu::FMI3DataType::FMI3Int16(v)) => *value = v,
+                _ => return FMI3Status::ERROR,
+            }
+        }
+        FMI3Status::OK
+    }
+}
+
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn GetUInt16(
+    instance: FMI3Instance,
+    value_references: &[FMI3ValueReference],
+    n_value_references: usize,
+    values: &mut [FMI3UInt16],
+    n_values: usize,
+) -> FMI3Status {
+    unsafe {
+        let fmu_instance: &mut fmu::FMU = &mut *(instance as *mut fmu::FMU);
+        for i in 0..n_value_references {
+            let vr = value_references[i];
+            let value = &mut values[i];
+            match fmu_instance.get_variable(vr as usize) {
+                Ok(fmu::FMI3DataType::FMI3UInt16(v)) => *value = v,
+                _ => return FMI3Status::ERROR,
+            }
+        }
+        FMI3Status::OK
+    }
+}
+
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn GetInt32(
+    instance: FMI3Instance,
+    value_references: &[FMI3ValueReference],
+    n_value_references: usize,
+    values: &mut [FMI3Int32],
+    n_values: usize,
+) -> FMI3Status {
+    unsafe {
+        let fmu_instance: &mut fmu::FMU = &mut *(instance as *mut fmu::FMU);
+        for i in 0..n_value_references {
+            let vr = value_references[i];
+            let value = &mut values[i];
+            match fmu_instance.get_variable(vr as usize) {
+                Ok(fmu::FMI3DataType::FMI3Int32(v)) => *value = v,
+                _ => return FMI3Status::ERROR,
+            }
+        }
+        FMI3Status::OK
+    }
+}
+
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn GetUInt32(
+    instance: FMI3Instance,
+    value_references: &[FMI3ValueReference],
+    n_value_references: usize,
+    values: &mut [FMI3UInt32],
+    n_values: usize,
+) -> FMI3Status {
+    unsafe {
+        let fmu_instance: &mut fmu::FMU = &mut *(instance as *mut fmu::FMU);
+        for i in 0..n_value_references {
+            let vr = value_references[i];
+            let value = &mut values[i];
+            match fmu_instance.get_variable(vr as usize) {
+                Ok(fmu::FMI3DataType::FMI3UInt32(v)) => *value = v,
+                _ => return FMI3Status::ERROR,
+            }
+        }
+        FMI3Status::OK
+    }
+}
+
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn GetInt64(
+    instance: FMI3Instance,
+    value_references: &[FMI3ValueReference],
+    n_value_references: usize,
+    values: &mut [FMI3Int64],
+    n_values: usize,
+) -> FMI3Status {
+    unsafe {
+        let fmu_instance: &mut fmu::FMU = &mut *(instance as *mut fmu::FMU);
+        for i in 0..n_value_references {
+            let vr = value_references[i];
+            let value = &mut values[i];
+            match fmu_instance.get_variable(vr as usize) {
+                Ok(fmu::FMI3DataType::FMI3Int64(v)) => *value = v,
+                _ => return FMI3Status::ERROR,
+            }
+        }
+        FMI3Status::OK
+    }
+}
+
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn GetUInt64(
+    instance: FMI3Instance,
+    value_references: &[FMI3ValueReference],
+    n_value_references: usize,
+    values: &mut [FMI3UInt64],
+    n_values: usize,
+) -> FMI3Status {
+    unsafe {
+        let fmu_instance: &mut fmu::FMU = &mut *(instance as *mut fmu::FMU);
+        for i in 0..n_value_references {
+            let vr = value_references[i];
+            let value = &mut values[i];
+            match fmu_instance.get_variable(vr as usize) {
+                Ok(fmu::FMI3DataType::FMI3UInt64(v)) => *value = v,
+                _ => return FMI3Status::ERROR,
+            }
+        }
+        FMI3Status::OK
+    }
+}
+
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn GetBoolean(
+    instance: FMI3Instance,
+    value_references: &[FMI3ValueReference],
+    n_value_references: usize,
+    values: &mut [FMI3Boolean],
+    n_values: usize,
+) -> FMI3Status {
+    unsafe {
+        let fmu_instance: &mut fmu::FMU = &mut *(instance as *mut fmu::FMU);
+        for i in 0..n_value_references {
+            let vr = value_references[i];
+            let value = &mut values[i];
+            match fmu_instance.get_variable(vr as usize) {
+                Ok(fmu::FMI3DataType::FMI3Boolean(v)) => *value = v,
+                _ => return FMI3Status::ERROR,
+            }
+        }
+        FMI3Status::OK
+    }
+}
+
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn GetString(
+    instance: FMI3Instance,
+    value_references: &[FMI3ValueReference],
+    n_value_references: usize,
+    values: &mut [FMI3String],
+    n_values: usize,
+) -> FMI3Status {
+    unsafe {
+        let fmu_instance: &mut fmu::FMU = &mut *(instance as *mut fmu::FMU);
+        for i in 0..n_value_references {
+            let vr = value_references[i];
+            let value = &mut values[i];
+            match fmu_instance.get_variable(vr as usize) {
+                Ok(fmu::FMI3DataType::FMI3String(v)) => *value = v,
+                _ => return FMI3Status::ERROR,
+            }
+        }
+        FMI3Status::OK
+    }
+}
+
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn GetBinary(
+    instance: FMI3Instance,
+    value_references: &[FMI3ValueReference],
+    n_value_references: usize,
+    value_sizes: &mut [usize],
+    values: &mut [FMI3Binary],
+    n_values: usize,
+) -> FMI3Status {
+    unsafe {
+        let fmu_instance: &mut fmu::FMU = &mut *(instance as *mut fmu::FMU);
+        for i in 0..n_value_references {
+            let vr = value_references[i];
+            let value = &mut values[i];
+            match fmu_instance.get_variable(vr as usize) {
+                Ok(fmu::FMI3DataType::FMI3Binary(v)) => *value = v,
+                _ => return FMI3Status::ERROR,
+            }
+        }
+        FMI3Status::OK
+    }
+}
+
+// #region setting variable values
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn GetClock(
+    instance: FMI3Instance,
+    value_references: &[FMI3ValueReference],
+    n_value_references: usize,
+    values: &mut [FMI3Clock],
+) -> FMI3Status {
+    unsafe {
+        let fmu_instance: &mut fmu::FMU = &mut *(instance as *mut fmu::FMU);
+        for i in 0..n_value_references {
+            let vr = value_references[i];
+            let value = &mut values[i];
+            match fmu_instance.get_variable(vr as usize) {
+                Ok(fmu::FMI3DataType::FMI3Clock(v)) => *value = v,
+                _ => return FMI3Status::ERROR,
+            }
+        }
+        FMI3Status::OK
+    }
+}
+
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn SetFloat32(
+    instance: FMI3Instance,
+    value_references: &[FMI3ValueReference],
+    n_value_references: usize,
+    values: &[FMI3Float32],
+    n_values: usize,
+) -> FMI3Status {
+    unsafe {
+        let fmu_instance: &mut fmu::FMU = &mut *(instance as *mut fmu::FMU);
+        for i in 0..n_value_references {
+            let vr = value_references[i];
+            match fmu_instance.set_variable(vr as usize, fmu::FMI3DataType::FMI3Float32(values[i]))
+            {
+                Ok(()) => {}
+                Err(()) => return FMI3Status::ERROR,
+            }
+        }
+        FMI3Status::OK
+    }
+}
+
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn SetFloat64(
+    instance: FMI3Instance,
+    value_references: &[FMI3ValueReference],
+    n_value_references: usize,
+    values: &[FMI3Float64],
+    n_values: usize,
+) -> FMI3Status {
+    unsafe {
+        let fmu_instance: &mut fmu::FMU = &mut *(instance as *mut fmu::FMU);
+        for i in 0..n_value_references {
+            let vr = value_references[i];
+            match fmu_instance.set_variable(vr as usize, fmu::FMI3DataType::FMI3Float64(values[i]))
+            {
+                Ok(()) => {}
+                Err(()) => return FMI3Status::ERROR,
+            }
+        }
+        FMI3Status::OK
+    }
+}
+
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn SetInt8(
+    instance: FMI3Instance,
+    value_references: &[FMI3ValueReference],
+    n_value_references: usize,
+    values: &[FMI3Int8],
+    n_values: usize,
+) -> FMI3Status {
+    unsafe {
+        let fmu_instance: &mut fmu::FMU = &mut *(instance as *mut fmu::FMU);
+        for i in 0..n_value_references {
+            let vr = value_references[i];
+            match fmu_instance.set_variable(vr as usize, fmu::FMI3DataType::FMI3Int8(values[i])) {
+                Ok(()) => {}
+                Err(()) => return FMI3Status::ERROR,
+            }
+        }
+        FMI3Status::OK
+    }
+}
+
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn SetUInt8(
+    instance: FMI3Instance,
+    value_references: &[FMI3ValueReference],
+    n_value_references: usize,
+    values: &[FMI3UInt8],
+    n_values: usize,
+) -> FMI3Status {
+    unsafe {
+        let fmu_instance: &mut fmu::FMU = &mut *(instance as *mut fmu::FMU);
+        for i in 0..n_value_references {
+            let vr = value_references[i];
+            match fmu_instance.set_variable(vr as usize, fmu::FMI3DataType::FMI3UInt8(values[i])) {
+                Ok(()) => {}
+                Err(()) => return FMI3Status::ERROR,
+            }
+        }
+        FMI3Status::OK
+    }
+}
+
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn SetInt16(
+    instance: FMI3Instance,
+    value_references: &[FMI3ValueReference],
+    n_value_references: usize,
+    values: &[FMI3Int16],
+    n_values: usize,
+) -> FMI3Status {
+    unsafe {
+        let fmu_instance: &mut fmu::FMU = &mut *(instance as *mut fmu::FMU);
+        for i in 0..n_value_references {
+            let vr = value_references[i];
+            match fmu_instance.set_variable(vr as usize, fmu::FMI3DataType::FMI3Int16(values[i])) {
+                Ok(()) => {}
+                Err(()) => return FMI3Status::ERROR,
+            }
+        }
+        FMI3Status::OK
+    }
+}
+
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn SetUInt16(
+    instance: FMI3Instance,
+    value_references: &[FMI3ValueReference],
+    n_value_references: usize,
+    values: &[FMI3UInt16],
+    n_values: usize,
+) -> FMI3Status {
+    unsafe {
+        let fmu_instance: &mut fmu::FMU = &mut *(instance as *mut fmu::FMU);
+        for i in 0..n_value_references {
+            let vr = value_references[i];
+            match fmu_instance.set_variable(vr as usize, fmu::FMI3DataType::FMI3UInt16(values[i])) {
+                Ok(()) => {}
+                Err(()) => return FMI3Status::ERROR,
+            }
+        }
+        FMI3Status::OK
+    }
+}
+
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn SetInt32(
+    instance: FMI3Instance,
+    value_references: &[FMI3ValueReference],
+    n_value_references: usize,
+    values: &[FMI3Int32],
+    n_values: usize,
+) -> FMI3Status {
+    unsafe {
+        let fmu_instance: &mut fmu::FMU = &mut *(instance as *mut fmu::FMU);
+        for i in 0..n_value_references {
+            let vr = value_references[i];
+            match fmu_instance.set_variable(vr as usize, fmu::FMI3DataType::FMI3Int32(values[i])) {
+                Ok(()) => {}
+                Err(()) => return FMI3Status::ERROR,
+            }
+        }
+        FMI3Status::OK
+    }
+}
+
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn SetUInt32(
+    instance: FMI3Instance,
+    value_references: &[FMI3ValueReference],
+    n_value_references: usize,
+    values: &[FMI3UInt32],
+    n_values: usize,
+) -> FMI3Status {
+    unsafe {
+        let fmu_instance: &mut fmu::FMU = &mut *(instance as *mut fmu::FMU);
+        for i in 0..n_value_references {
+            let vr = value_references[i];
+            match fmu_instance.set_variable(vr as usize, fmu::FMI3DataType::FMI3UInt32(values[i])) {
+                Ok(()) => {}
+                Err(()) => return FMI3Status::ERROR,
+            }
+        }
+        FMI3Status::OK
+    }
+}
+
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn SetInt64(
+    instance: FMI3Instance,
+    value_references: &[FMI3ValueReference],
+    n_value_references: usize,
+    values: &[FMI3Int64],
+    n_values: usize,
+) -> FMI3Status {
+    unsafe {
+        let fmu_instance: &mut fmu::FMU = &mut *(instance as *mut fmu::FMU);
+        for i in 0..n_value_references {
+            let vr = value_references[i];
+            match fmu_instance.set_variable(vr as usize, fmu::FMI3DataType::FMI3Int64(values[i])) {
+                Ok(()) => {}
+                Err(()) => return FMI3Status::ERROR,
+            }
+        }
+        FMI3Status::OK
+    }
+}
+
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn SetUInt64(
+    instance: FMI3Instance,
+    value_references: &[FMI3ValueReference],
+    n_value_references: usize,
+    values: &[FMI3UInt64],
+    n_values: usize,
+) -> FMI3Status {
+    unsafe {
+        let fmu_instance: &mut fmu::FMU = &mut *(instance as *mut fmu::FMU);
+        for i in 0..n_value_references {
+            let vr = value_references[i];
+            match fmu_instance.set_variable(vr as usize, fmu::FMI3DataType::FMI3UInt64(values[i])) {
+                Ok(()) => {}
+                Err(()) => return FMI3Status::ERROR,
+            }
+        }
+        FMI3Status::OK
+    }
+}
+
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn SetBoolean(
+    instance: FMI3Instance,
+    value_references: &[FMI3ValueReference],
+    n_value_references: usize,
+    values: &[FMI3Boolean],
+    n_values: usize,
+) -> FMI3Status {
+    unsafe {
+        let fmu_instance: &mut fmu::FMU = &mut *(instance as *mut fmu::FMU);
+        for i in 0..n_value_references {
+            let vr = value_references[i];
+            match fmu_instance.set_variable(vr as usize, fmu::FMI3DataType::FMI3Boolean(values[i]))
+            {
+                Ok(()) => {}
+                Err(()) => return FMI3Status::ERROR,
+            }
+        }
+        FMI3Status::OK
+    }
+}
+
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn SetString(
+    instance: FMI3Instance,
+    value_references: &[FMI3ValueReference],
+    n_value_references: usize,
+    values: &[FMI3String],
+    n_values: usize,
+) -> FMI3Status {
+    unsafe {
+        let fmu_instance: &mut fmu::FMU = &mut *(instance as *mut fmu::FMU);
+        for i in 0..n_value_references {
+            let vr = value_references[i];
+            match fmu_instance.set_variable(vr as usize, fmu::FMI3DataType::FMI3String(values[i])) {
+                Ok(()) => {}
+                Err(()) => return FMI3Status::ERROR,
+            }
+        }
+        FMI3Status::OK
+    }
+}
+
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn SetBinary(
+    instance: FMI3Instance,
+    value_references: &[FMI3ValueReference],
+    n_value_references: usize,
+    value_sizes: &[usize],
+    values: &[FMI3Binary],
+    n_values: usize,
+) -> FMI3Status {
+    unsafe {
+        let fmu_instance: &mut fmu::FMU = &mut *(instance as *mut fmu::FMU);
+        for i in 0..n_value_references {
+            let vr = value_references[i];
+            match fmu_instance.set_variable(vr as usize, fmu::FMI3DataType::FMI3Binary(values[i])) {
+                Ok(()) => {}
+                Err(()) => return FMI3Status::ERROR,
+            }
+        }
+        FMI3Status::OK
+    }
+}
+
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn SetClock(
+    instance: FMI3Instance,
+    value_references: &[FMI3ValueReference],
+    n_value_references: usize,
+    values: &[FMI3Clock],
+) -> FMI3Status {
+    unsafe {
+        let fmu_instance: &mut fmu::FMU = &mut *(instance as *mut fmu::FMU);
+        for i in 0..n_value_references {
+            let vr = value_references[i];
+            match fmu_instance.set_variable(vr as usize, fmu::FMI3DataType::FMI3Clock(values[i])) {
+                Ok(()) => {}
+                Err(()) => return FMI3Status::ERROR,
+            }
+        }
+        FMI3Status::OK
+    }
+}
+// #endregion setting variable values
+// #endregion getting and setting variable values
