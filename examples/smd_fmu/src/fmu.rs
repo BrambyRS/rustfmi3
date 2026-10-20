@@ -2,48 +2,6 @@
 //! with all the necessary functionality for the FMI 3.0 standard.
 
 use crate::model;
-use fmi3::platform_types::*;
-
-/// Enumeration of the different data types that can be set or retrieved in the FMI 3.0 interface.
-#[allow(dead_code)]
-pub enum FMI3DataType {
-    FMI3Boolean(Vec<FMI3Boolean>),
-    FMI3Float32(Vec<FMI3Float32>),
-    FMI3Float64(Vec<FMI3Float64>),
-    FMI3Int8(Vec<FMI3Int8>),
-    FMI3Int16(Vec<FMI3Int16>),
-    FMI3Int32(Vec<FMI3Int32>),
-    FMI3Int64(Vec<FMI3Int64>),
-    FMI3UInt8(Vec<FMI3UInt8>),
-    FMI3UInt16(Vec<FMI3UInt16>),
-    FMI3UInt32(Vec<FMI3UInt32>),
-    FMI3UInt64(Vec<FMI3UInt64>),
-    FMI3Binary(Vec<FMI3Binary>),
-    FMI3String(Vec<FMI3String>),
-    FMI3Clock(Vec<FMI3Clock>),
-}
-
-impl std::cmp::PartialEq for FMI3DataType {
-    fn eq(&self, other: &Self) -> bool {
-        match (self, other) {
-            (FMI3DataType::FMI3Boolean(_), FMI3DataType::FMI3Boolean(_)) => true,
-            (FMI3DataType::FMI3Float32(_), FMI3DataType::FMI3Float32(_)) => true,
-            (FMI3DataType::FMI3Float64(_), FMI3DataType::FMI3Float64(_)) => true,
-            (FMI3DataType::FMI3Int8(_), FMI3DataType::FMI3Int8(_)) => true,
-            (FMI3DataType::FMI3Int16(_), FMI3DataType::FMI3Int16(_)) => true,
-            (FMI3DataType::FMI3Int32(_), FMI3DataType::FMI3Int32(_)) => true,
-            (FMI3DataType::FMI3Int64(_), FMI3DataType::FMI3Int64(_)) => true,
-            (FMI3DataType::FMI3UInt8(_), FMI3DataType::FMI3UInt8(_)) => true,
-            (FMI3DataType::FMI3UInt16(_), FMI3DataType::FMI3UInt16(_)) => true,
-            (FMI3DataType::FMI3UInt32(_), FMI3DataType::FMI3UInt32(_)) => true,
-            (FMI3DataType::FMI3UInt64(_), FMI3DataType::FMI3UInt64(_)) => true,
-            (FMI3DataType::FMI3Binary(_), FMI3DataType::FMI3Binary(_)) => true,
-            (FMI3DataType::FMI3String(_), FMI3DataType::FMI3String(_)) => true,
-            (FMI3DataType::FMI3Clock(_), FMI3DataType::FMI3Clock(_)) => true,
-            _ => false,
-        }
-    }
-}
 
 /// Represents the different states an FMU can be in according to the FMI 3.0 standard.
 /// The enum does not itself enforce any state transitions; that is left to the FMU implementation.
@@ -94,10 +52,9 @@ struct VariableDefinition {
     causality: Causality,
     variability: Variability,
     initial: Option<Initial>,
-    data_type: FMI3DataType,
     dimension: Vec<usize>,
-    get: Box<dyn Fn(&model::SpringMassDamper) -> FMI3DataType>,
-    set: Box<dyn Fn(&mut model::SpringMassDamper, &FMI3DataType)>,
+    get: Box<dyn Fn(&model::SpringMassDamper) -> Vec<f64>>,
+    set: Box<dyn Fn(&mut model::SpringMassDamper, &[f64])>,
 }
 
 /// Represents the FMU instance for the spring mass damper model, encapsulating its state and variable definitions.
@@ -118,116 +75,63 @@ impl FMU {
                     causality: Causality::Independent,
                     variability: Variability::Continuous,
                     initial: None,
-                    data_type: FMI3DataType::FMI3Float64(vec![]),
                     dimension: vec![1],
-                    get: Box::new(|model| FMI3DataType::FMI3Float64(vec![model.time])),
-                    set: Box::new(|model, value| {
-                        if let FMI3DataType::FMI3Float64(v) = value {
-                            if let Some(&time) = v.get(0) {
-                                model.time = time;
-                            }
-                        }
-                    }),
+                    get: Box::new(|model| vec![model.time]),
+                    set: Box::new(|model, value| model.time = value[0]),
                 },
                 VariableDefinition {
                     name: "state".to_string(),
                     causality: Causality::Local,
                     variability: Variability::Continuous,
                     initial: Some(Initial::Exact),
-                    data_type: FMI3DataType::FMI3Float64(vec![]),
                     dimension: vec![2],
-                    get: Box::new(|model| FMI3DataType::FMI3Float64(vec![model.x[0], model.x[1]])),
-                    set: Box::new(|model, value| {
-                        if let FMI3DataType::FMI3Float64(v) = value {
-                            if v.len() == 2 {
-                                model.x[0] = v[0];
-                                model.x[1] = v[1];
-                            }
-                        }
-                    }),
+                    get: Box::new(|model| model.x.to_vec()),
+                    set: Box::new(|model, value| model.x.copy_from_slice(value)),
                 },
                 VariableDefinition {
                     name: "state_der".to_string(),
                     causality: Causality::Local,
                     variability: Variability::Continuous,
                     initial: Some(Initial::Calculated),
-                    data_type: FMI3DataType::FMI3Float64(vec![]),
                     dimension: vec![2],
-                    get: Box::new(|model| {
-                        FMI3DataType::FMI3Float64(vec![model.dx[0], model.dx[1]])
-                    }),
-                    set: Box::new(|model, value| {
-                        if let FMI3DataType::FMI3Float64(v) = value {
-                            if v.len() == 2 {
-                                model.dx[0] = v[0];
-                                model.dx[1] = v[1];
-                            }
-                        }
-                    }),
+                    get: Box::new(|model| model.dx.to_vec()),
+                    set: Box::new(|model, value| model.dx.copy_from_slice(value)),
                 },
                 VariableDefinition {
                     name: "input_force".to_string(),
                     causality: Causality::Input,
                     variability: Variability::Continuous,
                     initial: Some(Initial::Exact),
-                    data_type: FMI3DataType::FMI3Float64(vec![]),
                     dimension: vec![1],
-                    get: Box::new(|model| FMI3DataType::FMI3Float64(vec![model.force])),
-                    set: Box::new(|model, value| {
-                        if let FMI3DataType::FMI3Float64(v) = value {
-                            if v.len() == 1 {
-                                model.force = v[0];
-                            }
-                        }
-                    }),
+                    get: Box::new(|model| vec![model.force]),
+                    set: Box::new(|model, value| model.force = value[0]),
                 },
                 VariableDefinition {
                     name: "mass".to_string(),
                     causality: Causality::Parameter,
                     variability: Variability::Fixed,
                     initial: Some(Initial::Exact),
-                    data_type: FMI3DataType::FMI3Float64(vec![]),
-                    get: Box::new(|model| FMI3DataType::FMI3Float64(vec![model.mass])),
-                    set: Box::new(|model, value| {
-                        if let FMI3DataType::FMI3Float64(v) = value {
-                            if v.len() == 1 {
-                                model.mass = v[0];
-                            }
-                        }
-                    }),
                     dimension: vec![1],
+                    get: Box::new(|model| vec![model.mass]),
+                    set: Box::new(|model, value| model.mass = value[0]),
                 },
                 VariableDefinition {
                     name: "damping_constant".to_string(),
                     causality: Causality::Parameter,
                     variability: Variability::Fixed,
                     initial: Some(Initial::Exact),
-                    data_type: FMI3DataType::FMI3Float64(vec![]),
-                    get: Box::new(|model| FMI3DataType::FMI3Float64(vec![model.c])),
-                    set: Box::new(|model, value| {
-                        if let FMI3DataType::FMI3Float64(v) = value {
-                            if v.len() == 1 {
-                                model.c = v[0];
-                            }
-                        }
-                    }),
                     dimension: vec![1],
+                    get: Box::new(|model| vec![model.c]),
+                    set: Box::new(|model, value| model.c = value[0]),
                 },
                 VariableDefinition {
                     name: "spring_constant".to_string(),
                     causality: Causality::Parameter,
                     variability: Variability::Fixed,
                     initial: Some(Initial::Exact),
-                    data_type: FMI3DataType::FMI3Float64(vec![]),
-                    get: Box::new(|model| FMI3DataType::FMI3Float64(vec![model.k])),
-                    set: Box::new(|model, value| {
-                        if let FMI3DataType::FMI3Float64(v) = value {
-                            if v.len() == 1 {
-                                model.k = v[0];
-                            }
-                        }
-                    }),
                     dimension: vec![1],
+                    get: Box::new(|model| vec![model.k]),
+                    set: Box::new(|model, value| model.k = value[0]),
                 },
             ],
         }
@@ -245,75 +149,112 @@ impl FMU {
 
     // #region getters and setters
 
-    /// Fails if the variable has no start value (initial = Exact/Approx) in Instantiated state.
-    pub fn get_variable(&self, vr: usize) -> Result<FMI3DataType, ()> {
-        let var = self.variables.get(vr).ok_or(())?;
+    /// Function to retrieve the value of a variable by its value reference.
+    /// In this model, all variables are `f64`s, so only the GetFloat64 function calls this.
+    /// All other Get functions are not used in this model.
+    pub fn get_variable(
+        &self,
+        value_references: &[u32],
+        n_value_references: usize,
+        values: &mut [f64],
+        n_values: usize,
+    ) -> bool {
+        let mut i_val: usize = 0;
+        let model: &model::SpringMassDamper = &*self.model;
 
-        // If we're in the Instantiated state, only variables with a defined start value are readable.
-        // If we're in the Terminated state, no variables are readable.
-        if self.state == FMUState::Instantiated
-            && !matches!(var.initial, Some(Initial::Exact) | Some(Initial::Approx))
-            || self.state == FMUState::Terminated
-        {
-            return Err(());
+        for i in 0..n_value_references {
+            let this_vr: usize = value_references[i] as usize;
+            // Fail if the value reference is out of range
+            if this_vr >= self.variables.len() {
+                return false;
+            }
+            let this_var: &VariableDefinition = &self.variables[this_vr];
+            let n_elems: usize = this_var.dimension.iter().product();
+            let model_vals: Vec<f64> = (this_var.get.as_ref())(&model);
+            for j in 0..n_elems {
+                // Fail if the number of values provided is less than the number of elements expected
+                if i_val >= n_values {
+                    return false;
+                }
+                values[i_val] = model_vals[j];
+                i_val += 1;
+            }
         }
-
-        return Ok((var.get)(&self.model));
+        return true;
     }
 
     /// Fails if the variable is not settable in the current FMU state or the type does not match.
-    pub fn set_variable(&mut self, vr: usize, value: FMI3DataType) -> Result<(), ()> {
-        let allowed = {
-            let var = self.variables.get(vr).ok_or(())?;
+    pub fn set_variable(
+        &mut self,
+        value_references: &[u32],
+        n_value_references: usize,
+        values: &mut [f64],
+        n_values: usize,
+    ) -> bool {
+        let mut i_val: usize = 0;
+        let mut model: &mut model::SpringMassDamper = &mut *self.model;
 
-            if std::mem::discriminant(&var.data_type) != std::mem::discriminant(&value) {
-                return Err(());
+        for i in 0..n_value_references {
+            let this_vr: usize = value_references[i] as usize;
+            // Fail if the value reference is out of range
+            if this_vr >= self.variables.len() {
+                return false;
             }
-
-            match self.state {
-                // variability ≠ Constant AND (initial = Exact OR Approx)
-                FMUState::Instantiated => {
-                    !matches!(var.variability, Variability::Constant)
-                        && matches!(var.initial, Some(Initial::Exact) | Some(Initial::Approx))
-                }
-                // variability ≠ Constant AND initial = Exact
-                FMUState::InitializationMode => {
-                    !matches!(var.variability, Variability::Constant)
-                        && matches!(var.initial, Some(Initial::Exact))
-                }
-                // causality = Input OR (causality = Parameter AND variability = Tunable)
-                FMUState::EventMode => {
-                    matches!(var.causality, Causality::Input)
-                        || (matches!(var.causality, Causality::Parameter)
-                            && matches!(var.variability, Variability::Tunable))
-                }
-                // causality = Input AND variability = Continuous
-                FMUState::ContinuousTimeMode => {
-                    matches!(var.causality, Causality::Input)
-                        && matches!(var.variability, Variability::Continuous)
-                }
-                // causality = StructuralParameter AND (variability = Fixed OR Tunable)
-                FMUState::ConfigurationMode => {
-                    matches!(var.causality, Causality::StructuralParameter)
-                        && matches!(var.variability, Variability::Fixed | Variability::Tunable)
-                }
-                // causality = StructuralParameter AND variability = Tunable only
-                FMUState::ReconfigurationMode => {
-                    matches!(var.causality, Causality::StructuralParameter)
-                        && matches!(var.variability, Variability::Tunable)
-                }
-                FMUState::Terminated => false,
+            let this_var: &VariableDefinition = &self.variables[this_vr];
+            // Fail if setting this variable is not allowed in the current FMU state
+            if !is_set_allowed(
+                &self.state,
+                &this_var.causality,
+                &this_var.variability,
+                &this_var.initial,
+            ) {
+                return false;
             }
-        };
-
-        if !allowed {
-            return Err(());
+            let n_elems: usize = this_var.dimension.iter().product();
+            for _ in 0..n_elems {
+                // Fail if the number of values provided is less than the number of elements expected
+                if i_val >= n_values {
+                    return false;
+                }
+                (this_var.set.as_ref())(&mut model, &values[i_val..i_val + 1]);
+                i_val += 1;
+            }
         }
-
-        // self.variables and self.model are distinct fields; split borrow is safe
-        let model = &mut *self.model;
-        self.variables[vr].set.as_ref()(model, &value);
-        Ok(())
+        return true;
     }
     // #endregion getters and setters
+}
+
+fn is_set_allowed(
+    fmu_state: &FMUState,
+    causality: &Causality,
+    variability: &Variability,
+    initial: &Option<Initial>,
+) -> bool {
+    match fmu_state {
+        FMUState::Instantiated => {
+            !matches!(variability, Variability::Constant)
+                && matches!(initial, Some(Initial::Exact) | Some(Initial::Approx))
+        }
+        FMUState::InitializationMode => {
+            !matches!(variability, Variability::Constant) && matches!(initial, Some(Initial::Exact))
+        }
+        FMUState::EventMode => {
+            matches!(causality, Causality::Input)
+                || (matches!(causality, Causality::Parameter)
+                    && matches!(variability, Variability::Tunable))
+        }
+        FMUState::ContinuousTimeMode => {
+            matches!(causality, Causality::Input) && matches!(variability, Variability::Continuous)
+        }
+        FMUState::ConfigurationMode => {
+            matches!(causality, Causality::StructuralParameter)
+                && matches!(variability, Variability::Fixed | Variability::Tunable)
+        }
+        FMUState::ReconfigurationMode => {
+            matches!(causality, Causality::StructuralParameter)
+                && matches!(variability, Variability::Tunable)
+        }
+        FMUState::Terminated => false,
+    }
 }
