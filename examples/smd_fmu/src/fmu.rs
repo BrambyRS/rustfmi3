@@ -170,7 +170,7 @@ impl FMU {
             }
             let this_var: &VariableDefinition = &self.variables[this_vr];
             let n_elems: usize = this_var.dimension.iter().product();
-            let model_vals: Vec<f64> = (this_var.get.as_ref())(&model);
+            let model_vals: Vec<f64> = (this_var.get.as_ref())(model);
             for j in 0..n_elems {
                 // Fail if the number of values provided is less than the number of elements expected
                 if i_val >= n_values {
@@ -216,7 +216,7 @@ impl FMU {
                 if i_val >= n_values {
                     return false;
                 }
-                (this_var.set.as_ref())(&mut model, &values[i_val..i_val + 1]);
+                (this_var.set.as_ref())(model, &values[i_val..i_val + 1]);
                 i_val += 1;
             }
         }
