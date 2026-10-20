@@ -328,14 +328,9 @@ pub unsafe extern "C" fn SetFloat64(
 ) -> FMI3Status {
     unsafe {
         let fmu_instance: &mut fmu::FMU = &mut *(instance as *mut fmu::FMU);
-        let vr_slice = std::slice::from_raw_parts(value_references, n_value_references);
-        let val_slice = std::slice::from_raw_parts(values, n_values);
-        match fmu_instance.set_variable(
-            vr_slice,
-            n_value_references,
-            &mut val_slice.to_vec(),
-            n_values,
-        ) {
+        let vr_slice: &[u32] = std::slice::from_raw_parts(value_references, n_value_references);
+        let val_slice: &[f64] = std::slice::from_raw_parts(values, n_values);
+        match fmu_instance.set_variable(vr_slice, n_value_references, val_slice, n_values) {
             true => FMI3Status::OK,
             false => FMI3Status::ERROR,
         }

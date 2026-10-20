@@ -211,14 +211,13 @@ impl FMU {
                 return false;
             }
             let n_elems: usize = this_var.dimension.iter().product();
-            for _ in 0..n_elems {
-                // Fail if the number of values provided is less than the number of elements expected
-                if i_val >= n_values {
-                    return false;
-                }
-                (this_var.set.as_ref())(model, &values[i_val..i_val + 1]);
-                i_val += 1;
+            // Fail if setting the variable would exceed the number of provided values
+            if i_val + n_elems > n_values {
+                return false;
             }
+            let elems: &[f64] = &values[i_val..i_val + n_elems];
+            (this_var.set.as_ref())(model, elems);
+            i_val += n_elems;
         }
         return true;
     }
