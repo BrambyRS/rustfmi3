@@ -188,7 +188,7 @@ impl FMU {
         &mut self,
         value_references: &[u32],
         n_value_references: usize,
-        values: &mut [f64],
+        values: &[f64],
         n_values: usize,
     ) -> bool {
         let mut i_val: usize = 0;
