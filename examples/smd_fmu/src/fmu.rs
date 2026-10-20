@@ -192,7 +192,7 @@ impl FMU {
         n_values: usize,
     ) -> bool {
         let mut i_val: usize = 0;
-        let mut model: &mut model::SpringMassDamper = &mut *self.model;
+        let model: &mut model::SpringMassDamper = &mut *self.model;
 
         for i in 0..n_value_references {
             let this_vr: usize = value_references[i] as usize;
