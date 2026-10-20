@@ -6,6 +6,7 @@ use std::ffi::c_char;
 
 // #region enums
 /// Status codes for FMI 3.0
+#[repr(C)]
 pub enum FMI3Status {
     OK = 0,
     WARNING = 1,
@@ -15,6 +16,7 @@ pub enum FMI3Status {
 }
 
 /// Dependency types for FMI 3.0
+#[repr(C)]
 pub enum FMI3DependencyKind {
     Independent,
     Constant,
@@ -25,6 +27,7 @@ pub enum FMI3DependencyKind {
 }
 
 /// Interval qualifiers for FMI 3.0
+#[repr(C)]
 pub enum FMI3IntervalQualifier {
     NotYetKnown,
     Unchanged,
