@@ -2,6 +2,7 @@
 //! with all the necessary functionality for the FMI 3.0 standard.
 
 use crate::model;
+use fmi3::function_types::FMI3DependencyKind;
 
 /// Represents the different states an FMU can be in according to the FMI 3.0 standard.
 /// The enum does not itself enforce any state transitions; that is left to the FMU implementation.
@@ -52,6 +53,8 @@ struct VariableDefinition {
     causality: Causality,
     variability: Variability,
     initial: Option<Initial>,
+    initial_dependencies: Option<Vec<(FMI3DependencyKind, usize)>>, // (Dependency kind, value reference)
+    runtime_dependencies: Option<Vec<(FMI3DependencyKind, usize)>>, // (Dependency kind, value reference)
     dimension: Vec<usize>,
     get: Box<dyn Fn(&model::SpringMassDamper) -> Vec<f64>>,
     set: Box<dyn Fn(&mut model::SpringMassDamper, &[f64])>,
