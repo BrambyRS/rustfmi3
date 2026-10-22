@@ -16,3 +16,40 @@ pub enum FMUState {
     ReconfigurationMode,
     Terminated,
 }
+
+// #region FMU variable attributes
+/// Represents the causality of a variable in the FMU according to the FMI 3.0 standard.
+#[derive(PartialEq)]
+#[allow(dead_code)]
+enum Causality {
+    Parameter,
+    CalculatedParameter,
+    StructuralParameter,
+    Input,
+    Output,
+    Local,
+    Independent,
+}
+
+/// Represents the variability of a variable in the FMU according to the FMI 3.0 standard.
+#[derive(PartialEq)]
+#[allow(dead_code)]
+enum Variability {
+    Constant,
+    Fixed,
+    Tunable,
+    Discrete,
+    Continuous,
+}
+
+/// Represents the initial attribute of a variable in the FMU according to the FMI 3.0 standard.
+#[derive(PartialEq)]
+#[allow(dead_code)]
+enum Initial {
+    Exact,
+    Approx,
+    Calculated,
+}
+
+// The Dependency kinds already exist in `function_types`
+// #endregion FMU variable attributes
