@@ -1,4 +1,8 @@
 pub const FMI3_VERSION: &str = "3.0";
 
-pub mod function_types;
-pub mod platform_types;
+mod function_types;
+mod platform_types;
+pub mod utils;
+
+pub use function_types::*;
+pub use platform_types::*;
